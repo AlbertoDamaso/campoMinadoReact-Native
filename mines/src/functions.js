@@ -66,7 +66,7 @@ const safeNeighborhood = (board, row, column) => {
     return getNeighbors(board, row, column).reduce(safes, true)
 }
 
-const opeenField = (board, row, column) => {
+const openField = (board, row, column) => {
     const field = board[row] [column]
     if (!field.opened) {
         field.opened = true
@@ -74,7 +74,7 @@ const opeenField = (board, row, column) => {
             field.exploded = true
         } else if (safeNeighborhood(board, row, column)) {
             getNeighbors(board, row, column)
-                .forEach(n => opeenField(board, n.row, n.column))
+                .forEach(n => openField(board, n.row, n.column))
         } else {
             const neighbors = getNeighbors(board, row, column)
             field.nearMines = neighbors.filter(n => n.mined).length
@@ -91,11 +91,21 @@ const wonGame = board => fields(board).filter(pendding).length === 0
 const showMines = board => fields(board).filter(field => field.mined)
     .forEach(field => field.opened = true)
 
+const invertFlag = (board, row, column) => {
+    const field = board[row] [column]
+    field.flagged = !field.flagged
+}
+
+const flagUsed = board => fields(board)
+    .filter(field => field.flagged).length
+
 export { 
     createMinedBoard,
     cloneBoard,
-    opeenField,
+    openField,
     hadExplosion,
     wonGame,
-    showMines
+    showMines,
+    invertFlag,
+    flagUsed
 }
